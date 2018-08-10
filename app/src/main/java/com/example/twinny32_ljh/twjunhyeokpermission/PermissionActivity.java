@@ -73,6 +73,7 @@ public class PermissionActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
         setupFromSavedInstanceState(savedInstanceState);
         // check windows
         if (needWindowPermission()) {
@@ -215,7 +216,7 @@ public class PermissionActivity extends AppCompatActivity {
 
     private void showRationaleDialog(final List<String> needPermissions) {
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Dialog)
                 .setTitle(rationaleTitle)
                 .setMessage(rationale_message)
                 .setCancelable(false)
