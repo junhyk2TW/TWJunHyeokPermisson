@@ -252,7 +252,7 @@ public class PermissionActivity extends AppCompatActivity {
 
     private void showRationaleDialog(final List<String> needPermissions) {
 
-        new AlertDialog.Builder(this, R.style.Dialog)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
                 .setTitle(rationaleTitle)
                 .setMessage(rationale_message)
                 .setCancelable(false)
@@ -315,7 +315,7 @@ public class PermissionActivity extends AppCompatActivity {
             return;
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
 
         builder.setTitle(denyTitle)
                 .setMessage(denyMessage)
