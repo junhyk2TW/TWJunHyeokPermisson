@@ -1,13 +1,12 @@
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.junhyk2TW'
 
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.twinny32_ljh.twjunhyeokpermission"
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
