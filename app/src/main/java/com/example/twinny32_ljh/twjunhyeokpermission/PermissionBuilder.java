@@ -15,8 +15,8 @@ public abstract class PermissionBuilder<T extends PermissionBuilder> {
     private static final String PREFS_NAME_PERMISSION = "PREFS_NAME_PERMISSION";
     private static final String PREFS_IS_FIRST_REQUEST = "PREFS_IS_FIRST_REQUEST";
 
-    private PermissionListener listener;
-    private String[] permissions;
+    private PermissionListener listener; //성공, 실패를 알려주는 리스터
+    private String[] permissions; // 필요한 권한.
     private CharSequence rationaleTitle;
     private CharSequence rationaleMessage;
     private CharSequence denyTitle;
@@ -44,6 +44,7 @@ public abstract class PermissionBuilder<T extends PermissionBuilder> {
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            //sdk 버전이 마쉬멜로보다 낮을 경우 성공으로 처리.
             listener.onPermissionGranted();
             return;
         }

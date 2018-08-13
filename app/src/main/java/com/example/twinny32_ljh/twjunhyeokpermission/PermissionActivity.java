@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+/**
+ * 실제 퍼미션을 실행하는 다이아로그를 띄우는 액티비티
+ */
 public class PermissionActivity extends AppCompatActivity {
 
 
@@ -33,7 +36,6 @@ public class PermissionActivity extends AppCompatActivity {
 
     public static final int REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST = 30;
     public static final int REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST_SETTING = 31;
-
 
     public static final String EXTRA_PERMISSIONS = "permissions";
     public static final String EXTRA_RATIONALE_TITLE = "rationale_title";
@@ -46,7 +48,9 @@ public class PermissionActivity extends AppCompatActivity {
     public static final String EXTRA_RATIONALE_CONFIRM_TEXT = "rationale_confirm_text";
     public static final String EXTRA_DENIED_DIALOG_CLOSE_TEXT = "denied_dialog_close_text";
     public static final String EXTRA_SCREEN_ORIENTATION = "screen_orientation";
+
     private static Deque<PermissionListener> permissionListenerStack;
+
     CharSequence rationaleTitle;
     CharSequence rationale_message;
     CharSequence denyTitle;
@@ -57,7 +61,7 @@ public class PermissionActivity extends AppCompatActivity {
     String settingButtonText;
     String deniedCloseButtonText;
     String rationaleConfirmText;
-    boolean isShownRationaleDialog;
+    boolean isShownRationaleDialog; //기본값 false
     int requestedOrientation;
 
     public static void startActivity(Context context, Intent intent, PermissionListener listener) {
@@ -65,6 +69,7 @@ public class PermissionActivity extends AppCompatActivity {
             permissionListenerStack = new ArrayDeque<>();
         }
         permissionListenerStack.push(listener);
+        //리스너 전달하고 activity 생명주기 시작시킨다.
         context.startActivity(intent);
     }
 
@@ -74,11 +79,15 @@ public class PermissionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
+        //가져오기
         setupFromSavedInstanceState(savedInstanceState);
-        // check windows
+
+        // 최고급 퍼미션 체크 windows
         if (needWindowPermission()) {
+            //윈도우 퍼미션(=최고 권한 : 최 상단 뷰에 그리기 )을 요청한다.
             requestWindowPermission();
         } else {
+            //퍼미션을 체크한다.
             checkPermissions(false);
         }
 
@@ -122,6 +131,18 @@ public class PermissionActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *  가지고 있는 권한중 SYSTEM_ALERT_WINDOW 체크하기
+     *
+     *  만약 SYSTEM_ALERT_WINDOW(취상위 뷰에 그리기) 권한이 요청 목록에 있으면
+     *  hasWindowPermission을 실행한다.
+     * @return
+     * =======================false 일 경우(2)=======================
+     * 1. SYSTEM_ALERT_WINDOW 요청권한이 없을때
+     * 2. SYSTEM_ALERT_WINDOW 의 권한을 가지고 있을떄
+     * =======================true 일 경우(1)=======================
+     * 1. SYSTEM_ALERT_WINDOW  권한을 가지고 있지 않을때
+     */
     private boolean needWindowPermission() {
         for (String permission : permissions) {
             if (permission.equals(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
@@ -131,11 +152,17 @@ public class PermissionActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * @return 권한을 가지고있으면 true 없으면 false
+     */
     @TargetApi(Build.VERSION_CODES.M)
     private boolean hasWindowPermission() {
         return Settings.canDrawOverlays(getApplicationContext());
     }
 
+    /**
+     * 윈도우 퍼미션(=최고 권한 : 최 상단 뷰에 그리기 )을 요청한다.
+     */
     @TargetApi(Build.VERSION_CODES.M)
     private void requestWindowPermission() {
         Uri uri = Uri.fromParts("package", packageName, null);
@@ -145,7 +172,6 @@ public class PermissionActivity extends AppCompatActivity {
             new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
                     .setMessage(rationale_message)
                     .setCancelable(false)
-
                     .setNegativeButton(rationaleConfirmText, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -159,6 +185,10 @@ public class PermissionActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 권한체크
+     * @param fromOnActivityResult
+     */
     private void checkPermissions(boolean fromOnActivityResult) {
 
         List<String> needPermissions = new ArrayList<>();
@@ -175,28 +205,34 @@ public class PermissionActivity extends AppCompatActivity {
             }
         }
 
-        if (needPermissions.isEmpty()) {
+        if (needPermissions.isEmpty()) {//권한이 없을 때.
             permissionResult(null);
         } else if (fromOnActivityResult) { //From Setting Activity
             permissionResult(needPermissions);
-        } else if (needPermissions.size() == 1 && needPermissions
-                .contains(Manifest.permission.SYSTEM_ALERT_WINDOW)) {   // window permission deny
+        } else if (needPermissions.size() == 1 && needPermissions.contains(Manifest.permission.SYSTEM_ALERT_WINDOW)) {   // window permission deny
             permissionResult(needPermissions);
-        } else if (!isShownRationaleDialog && !TextUtils.isEmpty(rationale_message)) { // //Need Show Rationale
+        } else if (!isShownRationaleDialog && !TextUtils.isEmpty(rationale_message)) {
+            //권한 다이아로그 띄우기
             showRationaleDialog(needPermissions);
         } else { // //Need Request Permissions
             requestPermissions(needPermissions);
         }
     }
 
+    /**
+     * 권한설정 결과>> finish()시킴
+     * @param deniedPermissions 거절된 권한들
+     */
     private void permissionResult(List<String> deniedPermissions) {
         Log.v(BuildPermission.TAG, "permissionResult(): " + deniedPermissions);
         if (permissionListenerStack != null) {
             PermissionListener listener = permissionListenerStack.pop();
 
             if (ObjectUtils.isEmpty(deniedPermissions)) {
+                //거절된 퍼미션이 없을경우 다 수락된 것으로 표시
                 listener.onPermissionGranted();
             } else {
+                //거절된 퍼미션이 있을우 리스너로 날림.
                 listener.onPermissionDenied(deniedPermissions);
             }
             if (permissionListenerStack.size() == 0) {
@@ -234,6 +270,10 @@ public class PermissionActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 권한 요청하기
+     * @param needPermissions 요구하는 권한 들
+     */
     public void requestPermissions(List<String> needPermissions) {
         ActivityCompat.requestPermissions(this, needPermissions.toArray(new String[needPermissions.size()]),
                 REQ_CODE_PERMISSION_REQUEST);
@@ -256,8 +296,7 @@ public class PermissionActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         List<String> deniedPermissions = AbstractPermissionBase.getDeniedPermissions(this, permissions);
 
@@ -276,7 +315,7 @@ public class PermissionActivity extends AppCompatActivity {
             return;
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Dialog);
 
         builder.setTitle(denyTitle)
                 .setMessage(denyMessage)
@@ -322,6 +361,10 @@ public class PermissionActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * 권한이 거부되고 거절메세지가 있는경우
+     */
     public void showWindowPermissionDenyDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
@@ -356,10 +399,10 @@ public class PermissionActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case AbstractPermissionBase.REQ_CODE_REQUEST_SETTING:
+            case AbstractPermissionBase.REQ_CODE_REQUEST_SETTING: // 권한 설정에서 돌아왔을때의 결과.
                 checkPermissions(true);
                 break;
-            case REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST:   // 최초 ALERT WINDOW 요청에 대한 결과
+            case REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST:   // 윈도우 퍼미션(=최고 권한 : 최 상단 뷰에 그리기 ) ALERT WINDOW 요청에 대한 결과
                 if (!hasWindowPermission() && !TextUtils.isEmpty(denyMessage)) {  // 권한이 거부되고 denyMessage 가 있는 경우
                     showWindowPermissionDenyDialog();
                 } else {     // 권한있거나 또는 denyMessage가 없는 경우는 일반 permission 을 확인한다.

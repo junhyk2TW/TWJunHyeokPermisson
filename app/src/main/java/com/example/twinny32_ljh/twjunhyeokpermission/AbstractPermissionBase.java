@@ -15,6 +15,9 @@ import android.support.v4.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * BuildPermission 을 사용하기 위한 기능을 모아둔 추상 클래스이다.
+ */
 public abstract class AbstractPermissionBase {
     public static final int REQ_CODE_REQUEST_SETTING = 2000;
     private static final String PREFS_NAME_PERMISSION = "PREFS_NAME_PERMISSION";
@@ -83,16 +86,25 @@ public abstract class AbstractPermissionBase {
         return context.getSharedPreferences(PREFS_NAME_PERMISSION, Context.MODE_PRIVATE);
     }
 
+    /**
+     *
+     * @param context 해당 정보
+     * @return 해당앱 권한 설정으로가는 Intent
+     */
+    public static Intent getSettingIntent(Context context) {
+        return new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + context.getPackageName()));
+    }
+
+//////////////////////////////////////////////////////////////////////////
+//     *  액티비티||프래그먼트에서 설정으로 가능 startSettingActivity*    //
+//////////////////////////////////////////////////////////////////////////
+
     public static void startSettingActivityForResult(Activity activity) {
         startSettingActivityForResult(activity, REQ_CODE_REQUEST_SETTING);
     }
 
     public static void startSettingActivityForResult(Activity activity, int requestCode) {
         activity.startActivityForResult(getSettingIntent(activity), requestCode);
-    }
-
-    public static Intent getSettingIntent(Context context) {
-        return new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + context.getPackageName()));
     }
 
     public static void startSettingActivityForResult(Fragment fragment) {
@@ -102,6 +114,7 @@ public abstract class AbstractPermissionBase {
     public static void startSettingActivityForResult(Fragment fragment, int requestCode) {
         fragment.startActivityForResult(getSettingIntent(fragment.getActivity()), requestCode);
     }
+
 
     static void setFirstRequest(Context context, @NonNull String[] permissions) {
         for (String permission : permissions) {
