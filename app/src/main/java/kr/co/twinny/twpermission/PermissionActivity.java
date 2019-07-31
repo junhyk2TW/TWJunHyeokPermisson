@@ -1,4 +1,4 @@
-package com.example.twinny32_ljh.twjunhyeokpermission;
+package kr.co.twinny.twpermission;
 
 
 import android.Manifest;
@@ -19,7 +19,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.example.twinny32_ljh.twjunhyeokpermission.util.ObjectUtils;
+import com.example.twinny32_ljh.twpermission.R;
+
+import kr.co.twinny.twpermission.util.ObjectUtils;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

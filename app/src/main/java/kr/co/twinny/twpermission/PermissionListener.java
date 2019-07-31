@@ -1,4 +1,4 @@
-package com.example.twinny32_ljh.twjunhyeokpermission;
+package kr.co.twinny.twpermission;
 
 import java.util.List;
 

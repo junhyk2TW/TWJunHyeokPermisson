@@ -2,7 +2,7 @@
  * @namespace kr.co.twinny.moigo.util
  * @brief 모이고 앱의 유틸리티 패키지
  */
-package com.example.twinny32_ljh.twjunhyeokpermission.util;
+package kr.co.twinny.twpermission.util;
 
 import android.os.Message;
 
