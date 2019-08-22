@@ -19,14 +19,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.example.twinny32_ljh.twpermission.R;
-
-import kr.co.twinny.twpermission.util.ObjectUtils;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+
+import kr.co.twinny.twpermission.util.ObjectUtils;
 
 /**
  * 실제 퍼미션을 실행하는 다이아로그를 띄우는 액티비티

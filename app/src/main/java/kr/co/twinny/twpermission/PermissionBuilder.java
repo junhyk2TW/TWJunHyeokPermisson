@@ -8,8 +8,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.support.annotation.StringRes;
 
-import com.example.twinny32_ljh.twpermission.R;
-
 import kr.co.twinny.twpermission.util.ObjectUtils;
 
 public abstract class PermissionBuilder<T extends PermissionBuilder> {

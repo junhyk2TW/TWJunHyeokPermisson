@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1020
-        versionName "0.1.2"
+        versionCode 1030
+        versionName "0.1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -38,7 +38,7 @@ uploadArchives {
         mavenDeployer {
             repository(url: "http://jitpack.twinny.io:8081/content/repositories/TWLibrary/") {
                 authentication(userName: "twinny-aos", password: "twinny0825")
-                pom.version = "0.1.2"
+                pom.version = "0.1.3"
                 pom.artifactId = "TWPermissionHelper"
                 pom.groupId = "kr.co.twinny"
             }

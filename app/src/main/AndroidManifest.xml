@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.twinny32_ljh.twpermission">
+    package="kr.co.twinny.twpermission">
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name">
 
         <activity
-            android:name="com.example.twinny32_ljh.twpermission.kr.example.twinny32_ljh.twpermission.PermissionActivity" />
+            android:name="kr.co.twinny.twpermission.PermissionActivity" />
 
     </application>
 </manifest>
